@@ -1,0 +1,278 @@
+{
+  "name": "My workflow 2 copy",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "BUENAS NOCHES, YO RESPONDERE TUS CONSULTAS Y ENVIARE TU FRASE DE MOTIVACION",
+        "options": {
+          "systemMessage": "Eres un Asistente de Retos Personales, amigable y motivador. Tu misión es interpretar las solicitudes del usuario. Si el usuario menciona que completó un reto, tu ÚNICA tarea es usar la herramienta 'Registrar_Logro_en_Sheets'. Si quiere crear un nuevo reto, usa la herramienta 'Crear_Nuevo_Reto'. Responde siempre confirmando la acción que tomaste. De igual manera te enviare un correo por Gmail, cuando un reto sea completado"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        352,
+        -224
+      ],
+      "id": "7f38b090-55cb-45f2-9c65-dfd930cd14de",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        32
+      ],
+      "id": "46d80a67-9e5b-4623-a3cb-0897b2b66024",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "u8TTKvj7wjUWHRZP",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        256,
+        160
+      ],
+      "id": "5cffcc49-55fc-4ee8-bdc9-1dd5461b4fb5",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "Meta-Go",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        -336
+      ],
+      "id": "f15f060d-f1e8-46ec-acd6-fd4fcde73c79",
+      "name": "Webhook",
+      "webhookId": "71cfb534-482f-4dd6-ab3b-414705bb9403"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        896,
+        -320
+      ],
+      "id": "af2b26ab-c1ab-4c1c-8fc3-e5413c3e420e",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "sendTo": "arocheronalbe@gmail.com",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        128
+      ],
+      "id": "835b4b9d-ebfa-4fa9-b55f-b0e5465bd268",
+      "name": "Send a message in Gmail",
+      "webhookId": "69da13ee-1f8a-460e-818f-383ca6a4019e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Cg6MazBGbJe0PPMm",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RJ3lwx7oo139lYKDyv2-UPRI3llrQM_GjW9jbRZnaX8",
+          "mode": "list",
+          "cachedResultName": "Registro de Retos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RJ3lwx7oo139lYKDyv2-UPRI3llrQM_GjW9jbRZnaX8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RJ3lwx7oo139lYKDyv2-UPRI3llrQM_GjW9jbRZnaX8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Descripcion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Descripcion', ``, 'string') }}",
+            "Fechalimite": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fechalimite', ``, 'string') }}",
+            "Nombre": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Nombre', ``, 'string') }}",
+            "Estado": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Estado', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Descripcion",
+              "displayName": "Descripcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fechalimite",
+              "displayName": "Fechalimite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        864,
+        48
+      ],
+      "id": "46621a0a-8bfe-4bb6-9018-a1ba0a8b3752",
+      "name": "Registro de retos sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WAqHa8Mfe8zhD62u",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro de retos sheet": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "eacbe4be-41b3-4d8d-8e50-473417c4ed35",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b6ba3a5c14f6a76dfdce5c9ab296af909f8e2285affcc6c0639cf64f6a55245e"
+  },
+  "id": "3JTNWAM8RrHk3ebO",
+  "tags": []
+}
